@@ -145,7 +145,9 @@ class NetworkAnalyzer:
         elif dport == 67 or dport == 68:
             self.protocols.add("DHCP")
 
-    def generate_report(self) -> Dict[str, Union[str, List[str], Dict[str, Any], Set[str]]]:
+    def generate_report(
+        self,
+    ) -> Dict[str, Union[str, List[str], Dict[str, Any], Set[str]]]:
         """Generate network analysis report.
 
         Returns:

@@ -35,7 +35,9 @@ class SystemMonitor:
         # Initialize baseline
         self.baseline: Optional[Dict[str, Any]] = None
 
-    async def monitor(self, duration: int = 60, interval: float = 1.0) -> Dict[str, Any]:
+    async def monitor(
+        self, duration: int = 60, interval: float = 1.0
+    ) -> Dict[str, Any]:
         """Monitor system security.
 
         Args:
@@ -134,7 +136,9 @@ class SystemMonitor:
 
         return state
 
-    async def _check_anomalies(self, sample: Dict[str, Any], results: Dict[str, Any]) -> None:
+    async def _check_anomalies(
+        self, sample: Dict[str, Any], results: Dict[str, Any]
+    ) -> None:
         """Check for system anomalies.
 
         Args:
