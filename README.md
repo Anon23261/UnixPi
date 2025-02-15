@@ -1,7 +1,7 @@
 # UnixPi Security Framework
 
-![Build Status](https://github.com/ghostsec/unixpi/workflows/CI/badge.svg)
-![Security Status](https://github.com/ghostsec/unixpi/workflows/Security/badge.svg)
+![Build Status](https://github.com/Anon23261/UnixPi/workflows/CI/badge.svg)
+![Security Status](https://github.com/Anon23261/UnixPi/workflows/Security/badge.svg)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
 A comprehensive IoT and network security framework for Raspberry Pi Zero W, focusing on penetration testing, security analysis, and system hardening.
@@ -116,7 +116,7 @@ pytest tests/
 
 ### Reporting Security Issues
 
-Please report security issues to security@ghostsec.org or open a GitHub Security Advisory.
+Please report security issues by opening a GitHub Security Advisory on the UnixPi repository.
 
 ### Security Features
 
@@ -162,10 +162,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Support
 
 For support:
-- GitHub Issues
-- Documentation Wiki
-- Community Forum
-- Professional Support
+- GitHub Issues: https://github.com/Anon23261/UnixPi/issues
+- Documentation Wiki: https://github.com/Anon23261/UnixPi/wiki
+- Discussions: https://github.com/Anon23261/UnixPi/discussions
 
 ## Roadmap
 
