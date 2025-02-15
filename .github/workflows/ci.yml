@@ -2,7 +2,7 @@ name: UnixPi Security Framework CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, develop, master ]
   pull_request:
     branches: [ main ]
 
