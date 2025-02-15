@@ -33,9 +33,9 @@ class SystemMonitor:
         self.logger.addHandler(handler)
 
         # Initialize baseline
-        self.baseline = None
+        self.baseline: Optional[Dict[str, Any]] = None
 
-    async def monitor(self, duration: int = 60, interval: float = 1.0) -> Dict:
+    async def monitor(self, duration: int = 60, interval: float = 1.0) -> Dict[str, Any]:
         """Monitor system security.
 
         Args:
@@ -82,7 +82,7 @@ class SystemMonitor:
 
         return results
 
-    async def _get_system_state(self) -> Dict:
+    async def _get_system_state(self) -> Dict[str, Any]:
         """Get current system state.
 
         Returns:
@@ -134,7 +134,7 @@ class SystemMonitor:
 
         return state
 
-    async def _check_anomalies(self, sample: Dict, results: Dict):
+    async def _check_anomalies(self, sample: Dict[str, Any], results: Dict[str, Any]) -> None:
         """Check for system anomalies.
 
         Args:
@@ -204,7 +204,7 @@ class SystemMonitor:
                 }
             )
 
-    async def _security_assessment(self, results: Dict):
+    async def _security_assessment(self, results: Dict[str, Any]) -> None:
         """Perform security assessment.
 
         Args:
@@ -256,8 +256,8 @@ class SystemMonitor:
             )
 
     def generate_report(
-        self, results: Dict, filename: str = "system_monitor_report.json"
-    ):
+        self, results: Dict[str, Any], filename: str = "system_monitor_report.json"
+    ) -> None:
         """Generate and save monitoring report.
 
         Args:

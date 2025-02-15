@@ -7,16 +7,21 @@ Professional network traffic analysis tool
 import json
 import logging
 from datetime import datetime
-from typing import Dict
+from datetime import datetime, timedelta
+from typing import Any, Dict, List, Optional, Set, Union
 
 from scapy.all import ICMP, IP, TCP, UDP, conf, sniff
 from scapy.layers.http import HTTP, HTTPRequest
+
+ConnectionStats = Dict[str, Union[str, int, List[str], datetime, Set[str]]]
 
 
 class NetworkAnalyzer:
     """Professional network analysis implementation."""
 
-    def __init__(self, interface: str = None, log_file: str = "network_analysis.log"):
+    def __init__(
+        self, interface: Optional[str] = None, log_file: str = "network_analysis.log"
+    ):
         """Initialize the network analyzer.
 
         Args:
@@ -24,9 +29,9 @@ class NetworkAnalyzer:
             log_file: Path to log file
         """
         self.interface = interface or conf.iface
-        self.packets = []
-        self.connections = {}
-        self.protocols = set()
+        self.packets: List[Any] = []
+        self.connections: Dict[str, ConnectionStats] = {}
+        self.protocols: Set[str] = set()
 
         # Setup logging
         self.logger = logging.getLogger("NetworkAnalyzer")
@@ -37,7 +42,7 @@ class NetworkAnalyzer:
         )
         self.logger.addHandler(handler)
 
-    def start_capture(self, duration: int = 60, filter: str = None):
+    def start_capture(self, duration: int = 60, filter: Optional[str] = None) -> None:
         """Start packet capture.
 
         Args:
@@ -64,7 +69,7 @@ class NetworkAnalyzer:
             self.logger.error(f"Capture error: {str(e)}")
             raise
 
-    def _process_packet(self, packet):
+    def _process_packet(self, packet: Any) -> None:
         """Process captured packet.
 
         Args:
@@ -103,7 +108,7 @@ class NetworkAnalyzer:
         except Exception as e:
             self.logger.error(f"Packet processing error: {str(e)}")
 
-    def _analyze_tcp(self, packet):
+    def _analyze_tcp(self, packet: Any) -> None:
         """Analyze TCP packet.
 
         Args:
@@ -128,7 +133,7 @@ class NetworkAnalyzer:
         elif dport == 21:
             self.protocols.add("FTP")
 
-    def _analyze_udp(self, packet):
+    def _analyze_udp(self, packet: Any) -> None:
         """Analyze UDP packet.
 
         Args:
@@ -140,7 +145,7 @@ class NetworkAnalyzer:
         elif dport == 67 or dport == 68:
             self.protocols.add("DHCP")
 
-    def generate_report(self) -> Dict:
+    def generate_report(self) -> Dict[str, Union[str, List[str], Dict[str, Any], Set[str]]]:
         """Generate network analysis report.
 
         Returns:
@@ -179,7 +184,7 @@ class NetworkAnalyzer:
 
         return report
 
-    def _add_security_findings(self, report: Dict):
+    def _add_security_findings(self, report: Dict[str, Any]) -> None:
         """Add security findings to report.
 
         Args:
@@ -218,7 +223,7 @@ class NetworkAnalyzer:
                     }
                 )
 
-    def save_report(self, filename: str = "network_analysis_report.json"):
+    def save_report(self, filename: str = "network_analysis_report.json") -> None:
         """Save analysis report to file.
 
         Args:
@@ -239,7 +244,7 @@ class NetworkAnalyzer:
         print(f"Security Findings: {len(report['findings'])}")
 
 
-def main():
+def main() -> None:
     """Main function for testing."""
     import sys
 
