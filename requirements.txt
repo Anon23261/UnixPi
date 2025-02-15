@@ -15,7 +15,8 @@ netifaces>=0.11.0
 # Security tools
 python-owasp-zap-v2.4>=0.0.20
 pymetasploit3>=1.0
-dnsrecon>=1.1.0
+# Use dnspython instead of dnsrecon
+dnspython>=2.4.0
 impacket>=0.11.0
 
 # Network analysis
