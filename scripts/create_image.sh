@@ -1,14 +1,16 @@
 #!/bin/bash
 # UnixPi Image Creation Script
-# Creates a bootable SD card image with security tools pre-installed
+# Creates a bootable SD card image with security tools and firmware pre-installed
 
 set -e
 
 # Configuration
 IMAGE_NAME="unixpi-security.img"
-IMAGE_SIZE="4G"
+IMAGE_SIZE="8G"
 MOUNT_POINT="/mnt/unixpi"
-BOOT_SIZE="256M"
+BOOT_SIZE="512M"
+FIRMWARE_REPO="https://github.com/Anon23261/firmware-raspi.git"
+TEMP_DIR="/tmp/firmware-temp"
 
 echo "UnixPi Image Creation Script"
 echo "==========================="
@@ -76,7 +78,15 @@ chroot $MOUNT_POINT apt-get install -y \
     metasploit-framework \
     postgresql \
     usbutils \
-    build-essential
+    build-essential \
+    rkhunter \
+    apparmor \
+    apparmor-utils \
+    cryptsetup \
+    aide \
+    auditd \
+    fail2ban \
+    iptables-persistent
 
 # Install Python packages
 echo "Installing Python packages..."
@@ -123,18 +133,62 @@ dtoverlay=uart1
 dtoverlay=pi3-disable-bt
 EOF
 
+# Download and install firmware
+echo "Setting up firmware..."
+mkdir -p "$TEMP_DIR"
+cd "$TEMP_DIR"
+git init
+git remote add origin "$FIRMWARE_REPO"
+git config core.sparseCheckout true
+echo "boot/*" > .git/info/sparse-checkout
+echo "hardfp/opt/vc/bin/*" >> .git/info/sparse-checkout
+echo "hardfp/opt/vc/lib/*" >> .git/info/sparse-checkout
+echo "hardfp/opt/vc/sbin/*" >> .git/info/sparse-checkout
+git pull --depth=1 origin master
+
+# Copy firmware files
+mkdir -p $MOUNT_POINT/boot/firmware
+mkdir -p $MOUNT_POINT/opt/firmware
+cp -r $TEMP_DIR/boot/* $MOUNT_POINT/boot/firmware/
+cp -r $TEMP_DIR/hardfp/opt/vc/* $MOUNT_POINT/opt/firmware/
+
 # Set up cmdline.txt
-echo "console=serial0,115200 console=tty1 root=/dev/mmcblk0p2 rootfstype=ext4 elevator=deadline fsck.repair=yes rootwait modules-load=dwc2,g_ether" > $MOUNT_POINT/boot/cmdline.txt
+echo "console=serial0,115200 console=tty1 root=/dev/mmcblk0p2 rootfstype=ext4 elevator=deadline fsck.repair=yes rootwait modules-load=dwc2,g_ether quiet splash" > $MOUNT_POINT/boot/cmdline.txt
 
 # Create startup script
 cat > $MOUNT_POINT/opt/UnixPi/start.sh << EOF
 #!/bin/bash
 # UnixPi Startup Script
 
-# Start services
-systemctl start tor
-systemctl start bluetooth
-systemctl start postgresql
+# Initialize system
+if [ ! -f /etc/unixpi/initialized ]; then
+    # First boot setup
+    echo "Performing first boot setup..."
+    
+    # Initialize firmware
+    /opt/UnixPi/scripts/setup_firmware.sh
+    
+    # Initialize AIDE database
+    aideinit
+    
+    # Enable AppArmor
+    aa-enforce /etc/apparmor.d/*
+    
+    # Start services
+    systemctl enable --now tor
+    systemctl enable --now bluetooth
+    systemctl enable --now postgresql
+    systemctl enable --now auditd
+    systemctl enable --now fail2ban
+    
+    # Mark as initialized
+    mkdir -p /etc/unixpi
+    touch /etc/unixpi/initialized
+fi
+
+# Start UnixPi services
+systemctl start unixpi-monitor
+systemctl start unixpi-security
 
 # Initialize UnixPi
 python3 /opt/UnixPi/init.py
@@ -155,12 +209,26 @@ chmod +x $MOUNT_POINT/etc/rc.local
 # Set up security
 echo "Configuring security..."
 
+# Create default user
+useradd -m -s /bin/bash ghost
+echo "ghost:ghost23!" | chpasswd
+usermod -aG sudo,adm,dialout,cdrom,audio,video,plugdev,netdev ghost
+
 # Secure SSH
 cat > $MOUNT_POINT/etc/ssh/sshd_config << EOF
 PermitRootLogin no
-PasswordAuthentication no
+PasswordAuthentication yes
+PubkeyAuthentication yes
 X11Forwarding no
+AllowUsers ghost
+Protocol 2
+LoginGraceTime 30
+MaxAuthTries 3
 EOF
+
+# Set hostname
+echo "ghostsec" > $MOUNT_POINT/etc/hostname
+sed -i "s/127.0.1.1.*/127.0.1.1\tghostsec/g" $MOUNT_POINT/etc/hosts
 
 # Set up firewall
 chroot $MOUNT_POINT apt-get install -y ufw
@@ -171,6 +239,7 @@ chroot $MOUNT_POINT ufw enable
 
 # Clean up
 echo "Cleaning up..."
+rm -rf "$TEMP_DIR"
 umount $MOUNT_POINT/boot
 umount $MOUNT_POINT
 losetup -d $BOOT_DEV
