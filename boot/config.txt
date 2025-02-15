@@ -1,0 +1,83 @@
+# UnixPi Secure Boot Configuration
+
+# Memory Split (minimal GPU memory for headless operation)
+gpu_mem=16
+
+# Disable unnecessary features
+disable_overscan=1
+disable_splash=1
+
+# Security features
+arm_64bit=1
+arm_control=0x200
+disable_commandline_tags=1
+
+# Enable hardware random number generator
+dtoverlay=rng-bcm2835
+
+# Enable hardware security module
+dtoverlay=rpi-crypto
+
+# UART configuration for secure console
+enable_uart=1
+uart_2ndstage=1
+
+# Disable unnecessary interfaces by default
+dtoverlay=disable-bt
+dtoverlay=disable-wifi
+dtoverlay=pi3-disable-bt
+
+# USB configuration
+dtoverlay=dwc2
+otg_mode=1
+
+# Overclock settings for stability
+arm_freq=1000
+over_voltage=0
+core_freq=500
+sdram_freq=500
+over_voltage_sdram=0
+
+# Temperature control
+temp_limit=85
+temp_soft_limit=80
+
+# Boot options
+boot_delay=0
+boot_delay_ms=0
+initial_turbo=30
+
+# Watchdog timer
+dtparam=watchdog=on
+
+# Additional security overlays
+dtoverlay=uart1
+dtoverlay=i2c1
+dtoverlay=spi0-hw-cs
+
+# Force HDMI settings (if needed)
+hdmi_force_hotplug=1
+hdmi_drive=2
+config_hdmi_boost=4
+
+# Audio settings (disabled for security)
+dtparam=audio=off
+
+# Camera settings (disabled for security)
+start_x=0
+disable_camera_led=1
+
+# Network settings
+dtparam=eth_max_speed=100
+dtparam=eee=off
+
+# Kernel security options
+kernel=kernel8.img
+initramfs initrd.img followkernel
+
+# Enable hardware random number generator
+dtoverlay=rng-bcm2835
+
+# Additional security measures
+avoid_warnings=2
+avoid_safe_mode=1
