@@ -9,7 +9,7 @@ import logging
 from datetime import datetime
 from typing import Dict
 
-from scapy.all import IP, TCP, UDP, ICMP, conf, sniff
+from scapy.all import ICMP, IP, TCP, UDP, conf, sniff
 from scapy.layers.http import HTTP, HTTPRequest
 
 
