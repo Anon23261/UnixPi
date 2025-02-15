@@ -4,11 +4,12 @@ UnixPi Dependency Checker
 Validates all required dependencies and their versions
 """
 
-import pkg_resources
 import subprocess
 import sys
 from pathlib import Path
 from typing import Dict, List, Tuple
+
+import pkg_resources
 
 
 def check_python_version() -> bool:

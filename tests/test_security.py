@@ -4,16 +4,16 @@ UnixPi Security Framework Test Suite
 Comprehensive tests for all security features
 """
 
-import unittest
-import sys
 import os
+import sys
+import unittest
 from pathlib import Path
 
 # Add project root to path
 sys.path.append(str(Path(__file__).parent.parent))
 
-from UnixPi.security.iot import IoTScanner, Protocol, SecurityLevel
 from UnixPi.security.anonymity import AnonymityFramework
+from UnixPi.security.iot import IoTScanner, Protocol, SecurityLevel
 from UnixPi.security.network import NetworkScanner
 
 
