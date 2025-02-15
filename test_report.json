@@ -1,0 +1,24 @@
+{
+  "monitoring_info": {
+    "start_time": "2025-02-14T22:11:40",
+    "duration": 1,
+    "interval": 0.1
+  },
+  "system_state": {
+    "initial": {
+      "cpu": 5,
+      "memory": 45
+    },
+    "final": {
+      "cpu": 15,
+      "memory": 55
+    }
+  },
+  "anomalies": [],
+  "security_issues": [],
+  "summary": {
+    "total_anomalies": 0,
+    "total_security_issues": 0,
+    "risk_level": "LOW"
+  }
+}

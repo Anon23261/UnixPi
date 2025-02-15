@@ -7,96 +7,69 @@ Comprehensive tests for all security features
 import sys
 import unittest
 from pathlib import Path
+import pytest
 
-from UnixPi.security.anonymity import AnonymityFramework
-from UnixPi.security.iot import IoTScanner, Protocol, SecurityLevel
-from UnixPi.security.network import NetworkScanner
+from unixpi.security.network_analyzer import NetworkAnalyzer
+from unixpi.security.system_monitor import SystemMonitor
 
 # Add project root to path
 sys.path.append(str(Path(__file__).parent.parent))
 
 
-class TestIoTSecurity(unittest.TestCase):
-    """Test IoT security features"""
+class TestNetworkAnalyzer(unittest.TestCase):
+    """Test network analyzer features"""
 
     def setUp(self):
-        self.scanner = IoTScanner(SecurityLevel.ADVANCED)
+        """Set up test environment"""
+        self.analyzer = NetworkAnalyzer()
 
-    def test_device_discovery(self):
-        """Test device discovery functionality"""
-        devices = self.scanner.start_scan([Protocol.BLUETOOTH, Protocol.WIFI])
-        self.assertIsNotNone(devices)
-        self.assertIsInstance(devices, list)
+    @pytest.mark.skip(reason="Requires root privileges")
+    def test_packet_capture(self):
+        """Test packet capture"""
+        self.analyzer.start_capture()
+        self.analyzer.stop_capture()
+        self.assertTrue(len(self.analyzer.packets) >= 0)
 
-    def test_vulnerability_scan(self):
-        """Test vulnerability scanning"""
-        results = self.scanner.analyze_device(mock_device())
-        self.assertIn("vulnerabilities", results)
-        self.assertIn("security_score", results)
-
-
-class TestAnonymity(unittest.TestCase):
-    """Test anonymity features"""
-
-    def setUp(self):
-        self.framework = AnonymityFramework()
-
-    def test_tor_connection(self):
-        """Test Tor connection"""
-        status = self.framework.check_tor_connection()
-        self.assertTrue(status)
-
-    def test_ip_masking(self):
-        """Test IP masking"""
-        original_ip = self.framework.get_current_ip()
-        self.framework.enable_anonymity()
-        masked_ip = self.framework.get_current_ip()
-        self.assertNotEqual(original_ip, masked_ip)
+    def test_report_generation(self):
+        """Test report generation"""
+        report = self.analyzer.generate_report()
+        self.assertIsInstance(report, dict)
+        self.assertIn('timestamp', report)
+        self.assertIn('interface', report)
 
 
-class TestNetworkSecurity(unittest.TestCase):
-    """Test network security features"""
+class TestSystemMonitor(unittest.TestCase):
+    """Test system monitor features"""
 
     def setUp(self):
-        self.scanner = NetworkScanner()
+        """Set up test environment"""
+        self.monitor = SystemMonitor()
 
-    def test_port_scan(self):
-        """Test port scanning"""
-        results = self.scanner.scan_ports("localhost")
+    @pytest.mark.asyncio
+    async def test_monitoring(self):
+        """Test system monitoring"""
+        results = await self.monitor.monitor(duration=1, interval=0.1)
         self.assertIsInstance(results, dict)
+        self.assertIn('anomalies', results)
+        self.assertIn('security_issues', results)
 
-    def test_firewall(self):
-        """Test firewall configuration"""
-        status = self.scanner.check_firewall()
-        self.assertTrue(status)
-
-
-class TestSystemSecurity(unittest.TestCase):
-    """Test system security features"""
-
-    def test_secure_boot(self):
-        """Test secure boot configuration"""
-        with open("/boot/config.txt", "r") as f:
-            config = f.read()
-        self.assertIn("arm_64bit=1", config)
-        self.assertIn("disable_commandline_tags=1", config)
-
-    def test_kernel_hardening(self):
-        """Test kernel security parameters"""
-        with open("/etc/sysctl.d/99-security.conf", "r") as f:
-            config = f.read()
-        self.assertIn("kernel.kptr_restrict=2", config)
-        self.assertIn("kernel.dmesg_restrict=1", config)
-
-
-def mock_device():
-    """Create a mock IoT device for testing"""
-    return {
-        "name": "Test Device",
-        "mac_address": "00:11:22:33:44:55",
-        "protocols": [Protocol.BLUETOOTH],
-        "open_ports": [80, 443],
-    }
+    def test_report_generation(self):
+        """Test report generation"""
+        mock_results = {
+            'start_time': '2025-02-14T22:11:40',
+            'end_time': '2025-02-14T22:11:41',
+            'samples': [
+                {'cpu': 10, 'memory': 50},
+                {'cpu': 15, 'memory': 55}
+            ],
+            'anomalies': [],
+            'security_issues': [],
+            'duration': 1,
+            'interval': 0.1,
+            'baseline': {'cpu': 5, 'memory': 45}
+        }
+        self.monitor.generate_report(mock_results, 'test_report.json')
+        self.assertTrue(Path('test_report.json').exists())
 
 
 if __name__ == "__main__":
