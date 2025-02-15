@@ -9,7 +9,7 @@ import json
 import logging
 import os
 from datetime import datetime
-from typing import Dict, List
+from typing import Any, Dict, List, Optional
 
 import psutil
 
@@ -33,7 +33,7 @@ class SystemMonitor:
         self.logger.addHandler(handler)
 
         # Initialize baseline
-        self.baseline: Optional[Dict[str, Any]] = None
+        self.baseline: Dict[str, Any] | None = None
 
     async def monitor(
         self, duration: int = 60, interval: float = 1.0
@@ -324,7 +324,7 @@ class SystemMonitor:
             return "LOW"
 
 
-async def main():
+async def main() -> None:
     """Main function for testing."""
     import sys
 

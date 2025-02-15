@@ -7,13 +7,13 @@ Professional network traffic analysis tool
 import json
 import logging
 from datetime import datetime
-from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional, Set, Union
 
 from scapy.all import ICMP, IP, TCP, UDP, conf, sniff
 from scapy.layers.http import HTTP, HTTPRequest
 
-ConnectionStats = Dict[str, Union[str, int, List[str], datetime, Set[str]]]
+ConnectionStats = Dict[str, Union[str, int, List[str], datetime]]
+ProtocolSet = Set[str]
 
 
 class NetworkAnalyzer:
@@ -31,7 +31,7 @@ class NetworkAnalyzer:
         self.interface = interface or conf.iface
         self.packets: List[Any] = []
         self.connections: Dict[str, ConnectionStats] = {}
-        self.protocols: Set[str] = set()
+        self.protocols: ProtocolSet = set()
 
         # Setup logging
         self.logger = logging.getLogger("NetworkAnalyzer")
@@ -147,7 +147,7 @@ class NetworkAnalyzer:
 
     def generate_report(
         self,
-    ) -> Dict[str, Union[str, List[str], Dict[str, Any], Set[str]]]:
+    ) -> Dict[str, Union[str, List[str], Dict[str, Any], ProtocolSet]]:
         """Generate network analysis report.
 
         Returns:

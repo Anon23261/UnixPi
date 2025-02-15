@@ -43,7 +43,8 @@ sudo apt-get install -y \
     libssl-dev \
     libffi-dev \
     libpcap-dev \
-    libbluetooth-dev \
+    libbluetooth-dev \he last 2 and push to github please
+    
     libhidapi-dev \
     libusb-1.0-0-dev \
     pkg-config \
