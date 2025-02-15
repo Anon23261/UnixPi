@@ -1,19 +1,16 @@
 {
-  "monitoring_info": {
-    "start_time": "2025-02-15T00:04:34.881336",
-    "duration": 1,
-    "interval": 0.1
-  },
-  "system_state": {
-    "initial": {
+  "start_time": "2025-02-15T00:54:09.707874",
+  "end_time": "2025-02-15T00:54:09.707885",
+  "samples": [
+    {
       "cpu": {
-        "percent": 5
+        "percent": 10
       },
       "memory": {
-        "percent": 45
+        "percent": 50
       }
     },
-    "final": {
+    {
       "cpu": {
         "percent": 15
       },
@@ -21,7 +18,7 @@
         "percent": 55
       }
     }
-  },
+  ],
   "anomalies": [
     {
       "type": "CPU",
@@ -36,9 +33,24 @@
       "severity": "MEDIUM"
     }
   ],
+  "duration": 1,
+  "interval": 0.1,
+  "baseline": {
+    "cpu": {
+      "percent": 5
+    },
+    "memory": {
+      "percent": 45
+    }
+  },
   "summary": {
     "total_anomalies": 1,
     "total_security_issues": 1,
-    "risk_level": "HIGH"
+    "risk_level": "HIGH",
+    "system_info": {
+      "platform": "Linux-5.10.0-33-amd64-x86_64-with-glibc2.31",
+      "python_version": "3.9.2",
+      "hostname": "raspberry"
+    }
   }
 }

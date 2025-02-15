@@ -83,6 +83,7 @@ class TestNetworkAnalyzer(unittest.TestCase):
             self.assertTrue(any("error" in msg.lower() for msg in cm.output))
 
 
+@pytest.mark.asyncio
 class TestSystemMonitor(unittest.TestCase):
     """Test system monitor features"""
 
