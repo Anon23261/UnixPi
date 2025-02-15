@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm>=6.2"]
+build-backend = "setuptools.build_meta"
+
 [tool.black]
 line-length = 88
 target-version = ['py39']
@@ -30,7 +34,3 @@ disable = [
     "C0330",  # Wrong hanging indentation
     "C0326",  # Bad whitespace
 ]
-
-[build-system]
-requires = ["setuptools>=45", "wheel", "setuptools_scm>=6.2"]
-build-backend = "setuptools.build_meta"

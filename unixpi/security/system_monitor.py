@@ -72,6 +72,15 @@ class SystemMonitor:
         if not state:
             return
 
+        logger.debug(f"Checking for anomalies in state: {state}")
+        logger.debug(f"Current thresholds: {self.thresholds}")
+        logger.debug(f"CPU usage: {state['cpu']['percent']}% | Threshold: {self.thresholds['cpu']}%")
+        logger.debug(f"Memory usage: {state['memory']['percent']}% | Threshold: {self.thresholds['memory']}%")
+        logger.debug(f"Memory total: {state['memory']['total']} bytes")
+        logger.debug(f"Memory available: {state['memory']['available']} bytes")
+        logger.debug(f"Disk usage: {state['disk']['percent']}% | Threshold: {self.thresholds['disk']}%")
+        logger.debug(f"Network traffic: {state['network']['bytes_sent']} bytes/s | Threshold: {self.thresholds['network']} bytes/s")
+
         # CPU anomalies
         if state["cpu"]["percent"] > self.thresholds["cpu"]:
             results["anomalies"].append({

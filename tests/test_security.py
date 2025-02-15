@@ -11,6 +11,7 @@ import unittest
 from datetime import datetime
 from pathlib import Path
 from unittest.mock import MagicMock, patch
+import logging
 
 import pytest
 from scapy.layers.inet import IP, TCP, UDP
@@ -82,9 +83,41 @@ class TestNetworkAnalyzer(unittest.TestCase):
             self.analyzer._process_packet(None)
             self.assertTrue(any("error" in msg.lower() for msg in cm.output))
 
+    def test_invalid_packet_handling(self):
+        analyzer = NetworkAnalyzer()
+        analyzer._process_packet(None)  # Should handle gracefully without raising an error
+        report = analyzer.generate_report()
+        assert report['total_connections'] == 0
+
+    def test_empty_report_generation(self):
+        analyzer = NetworkAnalyzer()
+        report = analyzer.generate_report()
+        assert report['total_connections'] == 0
+
+    def test_packet_protocol_detection(self):
+        analyzer = NetworkAnalyzer()
+        tcp_packet = create_mock_packet("TCP")
+        udp_packet = create_mock_packet("UDP")
+        analyzer._process_packet(tcp_packet)
+        analyzer._process_packet(udp_packet)
+        report = analyzer.generate_report()
+        assert "TCP" in report["protocols"]
+        assert "UDP" in report["protocols"]
+
+    def test_packet_source_destination_detection(self):
+        analyzer = NetworkAnalyzer()
+        packet = create_mock_packet("TCP", src="192.168.1.100", dst="192.168.1.200")
+        analyzer._process_packet(packet)
+        report = analyzer.generate_report()
+        assert "192.168.1.100:192.168.1.200" in report["connections"]
+        # Check if the connection exists and has the correct data
+        connection_data = report["connections"]["192.168.1.100:192.168.1.200"]
+        assert connection_data["packets"] == 1
+        assert connection_data["bytes"] > 0
+
 
 @pytest.mark.asyncio
-class TestSystemMonitor(unittest.TestCase):
+class TestSystemMonitor(unittest.IsolatedAsyncioTestCase):
     """Test system monitor features"""
 
     def setUp(self):
@@ -157,6 +190,40 @@ class TestSystemMonitor(unittest.TestCase):
             self.assertEqual(report_data["summary"]["total_anomalies"], 1)
             self.assertEqual(report_data["summary"]["total_security_issues"], 1)
             self.assertEqual(report_data["summary"]["risk_level"], "HIGH")
+
+    async def test_system_monitor_exception_handling(self):
+        monitor = SystemMonitor()
+        monitor._get_system_state = lambda: (_ for _ in ()).throw(Exception("Simulated failure"))  # Simulate failure
+        with self.assertRaises(Exception):
+            await monitor.monitor(duration=5, interval=1)
+
+    async def test_anomaly_detection_exceeds_threshold(self):
+        monitor = SystemMonitor()
+        monitor.thresholds["cpu"] = 0  # Set threshold to 0% for testing
+        state = await monitor._get_system_state()
+        results = await monitor.monitor(duration=5, interval=1)
+        assert any(anomaly["type"] == "CPU" for anomaly in results["anomalies"])
+
+    async def test_anomaly_detection_cpu_usage(self):
+        monitor = SystemMonitor()
+        monitor.thresholds["cpu"] = 50  # Set threshold to 50% for testing
+        state = await monitor._get_system_state()
+        state["cpu"]["percent"] = 75  # Simulate high CPU usage
+        results = {"anomalies": [], "samples": [state]}
+        await monitor._check_anomalies(state, results)
+        assert any(anomaly["type"] == "CPU" for anomaly in results["anomalies"])
+
+    async def test_anomaly_detection_memory_usage(self):
+        logger = logging.getLogger(__name__)
+        logger.setLevel(logging.DEBUG)
+        monitor = SystemMonitor()
+        monitor.thresholds["memory"] = 50  # Set threshold to 50% for testing
+        state = await monitor._get_system_state()
+        state["memory"] = {"total": 100, "available": 25, "percent": 75}  # Simulate high memory usage
+        results = {"anomalies": [], "samples": [state]}
+        await monitor._check_anomalies(state, results)
+        logger.debug(f"Anomalies detected: {results['anomalies']}")
+        assert any(anomaly["type"] == "Memory" for anomaly in results["anomalies"])
 
 
 if __name__ == "__main__":
