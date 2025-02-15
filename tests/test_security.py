@@ -23,15 +23,15 @@ from unixpi.security.system_monitor import SystemMonitor
 sys.path.append(str(Path(__file__).parent.parent))
 
 
-def create_mock_packet(protocol='TCP', src='192.168.1.1', dst='192.168.1.2'):
+def create_mock_packet(protocol="TCP", src="192.168.1.1", dst="192.168.1.2"):
     """Create a mock packet for testing"""
     packet = Packet()
     ip_layer = IP(src=src, dst=dst)
-    if protocol == 'TCP':
+    if protocol == "TCP":
         proto_layer = TCP(sport=12345, dport=80)
     else:
         proto_layer = UDP(sport=12345, dport=53)
-    
+
     packet.add_payload(ip_layer)
     ip_layer.add_payload(proto_layer)
     return packet
@@ -47,26 +47,26 @@ class TestNetworkAnalyzer(unittest.TestCase):
     def test_process_packet(self):
         """Test packet processing without root privileges"""
         # Test TCP packet
-        tcp_packet = create_mock_packet('TCP')
+        tcp_packet = create_mock_packet("TCP")
         self.analyzer._process_packet(tcp_packet)
-        self.assertIn('TCP', self.analyzer.protocols)
-        
+        self.assertIn("TCP", self.analyzer.protocols)
+
         # Test UDP packet
-        udp_packet = create_mock_packet('UDP')
+        udp_packet = create_mock_packet("UDP")
         self.analyzer._process_packet(udp_packet)
-        self.assertIn('UDP', self.analyzer.protocols)
+        self.assertIn("UDP", self.analyzer.protocols)
 
         # Verify connection tracking
         conn_key = f"{tcp_packet[IP].src}:{tcp_packet[IP].dst}"
         self.assertIn(conn_key, self.analyzer.connections)
-        self.assertGreater(self.analyzer.connections[conn_key]['packets'], 0)
+        self.assertGreater(self.analyzer.connections[conn_key]["packets"], 0)
 
     def test_report_generation(self):
         """Test report generation"""
         # Process some packets first
         for _ in range(3):
             self.analyzer._process_packet(create_mock_packet())
-        
+
         report = self.analyzer.generate_report()
         self.assertIsInstance(report, dict)
         self.assertIn("timestamp", report)
@@ -77,10 +77,10 @@ class TestNetworkAnalyzer(unittest.TestCase):
 
     def test_error_handling(self):
         """Test error handling in packet processing"""
-        with self.assertLogs(level='ERROR') as cm:
+        with self.assertLogs(level="ERROR") as cm:
             # Create an invalid packet that will cause an error
             self.analyzer._process_packet(None)
-            self.assertTrue(any('error' in msg.lower() for msg in cm.output))
+            self.assertTrue(any("error" in msg.lower() for msg in cm.output))
 
 
 class TestSystemMonitor(unittest.TestCase):
@@ -122,17 +122,31 @@ class TestSystemMonitor(unittest.TestCase):
         mock_results = {
             "start_time": datetime.now().isoformat(),
             "end_time": datetime.now().isoformat(),
-            "samples": [{"cpu": {"percent": 10}, "memory": {"percent": 50}},
-                       {"cpu": {"percent": 15}, "memory": {"percent": 55}}],
-            "anomalies": [{"type": "CPU", "message": "High CPU usage detected", "severity": "HIGH"}],
-            "security_issues": [{"type": "Process", "message": "Suspicious process detected", "severity": "MEDIUM"}],
+            "samples": [
+                {"cpu": {"percent": 10}, "memory": {"percent": 50}},
+                {"cpu": {"percent": 15}, "memory": {"percent": 55}},
+            ],
+            "anomalies": [
+                {
+                    "type": "CPU",
+                    "message": "High CPU usage detected",
+                    "severity": "HIGH",
+                }
+            ],
+            "security_issues": [
+                {
+                    "type": "Process",
+                    "message": "Suspicious process detected",
+                    "severity": "MEDIUM",
+                }
+            ],
             "duration": 1,
             "interval": 0.1,
             "baseline": {"cpu": {"percent": 5}, "memory": {"percent": 45}},
         }
         report_file = "test_report.json"
         self.monitor.generate_report(mock_results, report_file)
-        
+
         # Verify report contents
         self.assertTrue(Path(report_file).exists())
         with open(report_file) as f:
@@ -146,4 +160,3 @@ class TestSystemMonitor(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
-
