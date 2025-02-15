@@ -9,10 +9,9 @@ import json
 import logging
 import os
 from datetime import datetime
-from typing import Dict, List, Optional, Set
+from typing import Dict, List
 
 import psutil
-from psutil._common import bytes2human
 
 
 class SystemMonitor:
@@ -160,7 +159,9 @@ class SystemMonitor:
                     "timestamp": sample["timestamp"],
                     "type": "MEMORY_USAGE",
                     "severity": "HIGH",
-                    "description": f"High memory usage: {sample['memory']['virtual']['percent']}%",
+                    "description": (
+                        f"High memory usage: {sample['memory']['virtual']['percent']}%"
+                    ),
                 }
             )
 
@@ -172,7 +173,9 @@ class SystemMonitor:
                         "timestamp": sample["timestamp"],
                         "type": "DISK_SPACE",
                         "severity": "MEDIUM",
-                        "description": f"Low disk space on {path}: {usage['percent']}%",
+                        "description": (
+                            f"Low disk space on {path}: {usage['percent']}%"
+                        ),
                     }
                 )
 
@@ -216,7 +219,9 @@ class SystemMonitor:
                         {
                             "type": "PROCESS_PRIVILEGE",
                             "severity": "MEDIUM",
-                            "description": f"Process {proc.info['name']} running as root",
+                            "description": (
+                                f"Process {proc.info['name']} running as root"
+                            ),
                             "recommendation": "Review process privileges",
                         }
                     )
@@ -230,7 +235,9 @@ class SystemMonitor:
                         {
                             "type": "SUSPICIOUS_PROCESS",
                             "severity": "HIGH",
-                            "description": f"Suspicious process detected: {proc.info['name']}",
+                            "description": (
+                                f"Suspicious process detected: {proc.info['name']}"
+                            ),
                             "recommendation": "Investigate process",
                         }
                     )

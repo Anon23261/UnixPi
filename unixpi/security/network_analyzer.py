@@ -4,15 +4,13 @@ UnixPi Network Analyzer
 Professional network traffic analysis tool
 """
 
-import asyncio
 import json
 import logging
 from datetime import datetime
-from typing import Dict, List, Optional, Set
+from typing import Dict
 
-from scapy.all import *
-from scapy.layers.http import *
-from scapy.layers.inet import *
+from scapy.all import IP, TCP, UDP, ICMP, conf, sniff
+from scapy.layers.http import HTTP, HTTPRequest
 
 
 class NetworkAnalyzer:
