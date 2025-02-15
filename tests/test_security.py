@@ -6,12 +6,12 @@ Comprehensive tests for all security features
 
 import asyncio
 import json
+import logging
 import sys
 import unittest
 from datetime import datetime
 from pathlib import Path
 from unittest.mock import MagicMock, patch
-import logging
 
 import pytest
 from scapy.layers.inet import IP, TCP, UDP
