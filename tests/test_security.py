@@ -85,14 +85,16 @@ class TestNetworkAnalyzer(unittest.TestCase):
 
     def test_invalid_packet_handling(self):
         analyzer = NetworkAnalyzer()
-        analyzer._process_packet(None)  # Should handle gracefully without raising an error
+        analyzer._process_packet(
+            None
+        )  # Should handle gracefully without raising an error
         report = analyzer.generate_report()
-        assert report['total_connections'] == 0
+        assert report["total_connections"] == 0
 
     def test_empty_report_generation(self):
         analyzer = NetworkAnalyzer()
         report = analyzer.generate_report()
-        assert report['total_connections'] == 0
+        assert report["total_connections"] == 0
 
     def test_packet_protocol_detection(self):
         analyzer = NetworkAnalyzer()
@@ -193,7 +195,9 @@ class TestSystemMonitor(unittest.IsolatedAsyncioTestCase):
 
     async def test_system_monitor_exception_handling(self):
         monitor = SystemMonitor()
-        monitor._get_system_state = lambda: (_ for _ in ()).throw(Exception("Simulated failure"))  # Simulate failure
+        monitor._get_system_state = lambda: (_ for _ in ()).throw(
+            Exception("Simulated failure")
+        )  # Simulate failure
         with self.assertRaises(Exception):
             await monitor.monitor(duration=5, interval=1)
 
@@ -219,7 +223,11 @@ class TestSystemMonitor(unittest.IsolatedAsyncioTestCase):
         monitor = SystemMonitor()
         monitor.thresholds["memory"] = 50  # Set threshold to 50% for testing
         state = await monitor._get_system_state()
-        state["memory"] = {"total": 100, "available": 25, "percent": 75}  # Simulate high memory usage
+        state["memory"] = {
+            "total": 100,
+            "available": 25,
+            "percent": 75,
+        }  # Simulate high memory usage
         results = {"anomalies": [], "samples": [state]}
         await monitor._check_anomalies(state, results)
         logger.debug(f"Anomalies detected: {results['anomalies']}")

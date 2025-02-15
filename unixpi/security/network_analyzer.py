@@ -13,6 +13,7 @@ from scapy.packet import Packet
 
 logger = logging.getLogger(__name__)
 
+
 class NetworkAnalyzer:
     """Network traffic analyzer for security monitoring"""
 
@@ -31,7 +32,7 @@ class NetworkAnalyzer:
 
             # Extract IP layer
             ip = packet[IP]
-            
+
             # Track protocols
             if packet.haslayer(TCP):
                 self.protocols.add("TCP")
@@ -51,7 +52,7 @@ class NetworkAnalyzer:
                     "packets": 0,
                     "bytes": 0,
                     "first_seen": datetime.now(),
-                    "last_seen": datetime.now()
+                    "last_seen": datetime.now(),
                 }
 
             self.connections[conn_key]["packets"] += 1
@@ -70,5 +71,5 @@ class NetworkAnalyzer:
             "protocols": list(self.protocols),
             "connections": self.connections,
             "total_connections": len(self.connections),
-            "unique_protocols": len(self.protocols)
+            "unique_protocols": len(self.protocols),
         }
