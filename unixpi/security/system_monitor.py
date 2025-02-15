@@ -329,7 +329,7 @@ async def main():
 
     monitor = SystemMonitor()
 
-    print(f"Starting system monitoring")
+    print("Starting system monitoring")
     print(f"Duration: {duration} seconds")
     print(f"Interval: {interval} seconds")
     print("Press Ctrl+C to stop")
