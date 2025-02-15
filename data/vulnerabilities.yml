@@ -1,0 +1,74 @@
+# UnixPi Vulnerability Database
+# Professional IoT security vulnerability definitions
+
+firmware:
+  - id: FW-001
+    affected_version: "1.0.0"
+    severity: CRITICAL
+    description: "Outdated firmware with known security vulnerabilities"
+    recommendation: "Update to latest firmware version"
+    
+  - id: FW-002
+    affected_version: "1.1.0"
+    severity: HIGH
+    description: "Insecure firmware update mechanism"
+    recommendation: "Implement secure firmware update process with signature verification"
+
+http:
+  - id: HTTP-001
+    affected_version: "2.4.0"
+    severity: HIGH
+    description: "Default HTTP configuration exposes sensitive information"
+    recommendation: "Disable directory listing and remove server version headers"
+    
+  - id: HTTP-002
+    affected_version: "2.2.0"
+    severity: CRITICAL
+    description: "Remote code execution vulnerability in HTTP server"
+    recommendation: "Update to latest version with security patches"
+
+ssh:
+  - id: SSH-001
+    affected_version: "7.5"
+    severity: HIGH
+    description: "Weak SSH configuration allows password authentication"
+    recommendation: "Disable password authentication, use key-based auth only"
+    
+  - id: SSH-002
+    affected_version: "8.0"
+    severity: MEDIUM
+    description: "SSH service allows weak ciphers"
+    recommendation: "Configure strong cipher suite and key exchange algorithms"
+
+telnet:
+  - id: TELNET-001
+    affected_version: "1.0"
+    severity: CRITICAL
+    description: "Telnet service enabled with plain-text authentication"
+    recommendation: "Disable Telnet service, use SSH instead"
+
+bluetooth:
+  - id: BT-001
+    affected_version: "4.0"
+    severity: HIGH
+    description: "Bluetooth service discoverable with default PIN"
+    recommendation: "Disable discovery mode when not needed, use strong PIN"
+    
+  - id: BT-002
+    affected_version: "5.0"
+    severity: MEDIUM
+    description: "Bluetooth Low Energy uses weak encryption"
+    recommendation: "Enable strongest available encryption mode"
+
+default_credentials:
+  TEST-100:
+    - username: "admin"
+      password: "admin"
+    - username: "root"
+      password: "root"
+  
+  GENERIC-IOT:
+    - username: "admin"
+      password: "password"
+    - username: "administrator"
+      password: "admin123"
