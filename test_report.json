@@ -1,24 +1,44 @@
 {
   "monitoring_info": {
-    "start_time": "2025-02-14T22:11:40",
+    "start_time": "2025-02-15T00:04:34.881336",
     "duration": 1,
     "interval": 0.1
   },
   "system_state": {
     "initial": {
-      "cpu": 5,
-      "memory": 45
+      "cpu": {
+        "percent": 5
+      },
+      "memory": {
+        "percent": 45
+      }
     },
     "final": {
-      "cpu": 15,
-      "memory": 55
+      "cpu": {
+        "percent": 15
+      },
+      "memory": {
+        "percent": 55
+      }
     }
   },
-  "anomalies": [],
-  "security_issues": [],
+  "anomalies": [
+    {
+      "type": "CPU",
+      "message": "High CPU usage detected",
+      "severity": "HIGH"
+    }
+  ],
+  "security_issues": [
+    {
+      "type": "Process",
+      "message": "Suspicious process detected",
+      "severity": "MEDIUM"
+    }
+  ],
   "summary": {
-    "total_anomalies": 0,
-    "total_security_issues": 0,
-    "risk_level": "LOW"
+    "total_anomalies": 1,
+    "total_security_issues": 1,
+    "risk_level": "HIGH"
   }
 }
