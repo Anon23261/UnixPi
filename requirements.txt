@@ -1,5 +1,5 @@
 # Core dependencies
-cryptography>=41.0.0
+cryptography>=2.6.1
 scapy>=2.5.0
 # Replace PyBluez with bleak for modern Bluetooth support
 bleak>=0.21.1
@@ -23,11 +23,13 @@ impacket>=0.11.0
 # Temporarily disabled due to build issues
 # pypcap>=1.3.0
 dpkt>=1.9.8
-netfilterqueue>=1.0.0
+# Temporarily disabled due to build issues
+# netfilterqueue>=1.0.0  # Will be enabled once build issues are resolved
 pyshark>=0.6.0
 
 # IoT specific
-bluepy>=1.3.0
+# Temporarily disabled due to build issues
+# bluepy>=1.3.0  # Will be enabled once build issues are resolved
 zigpy>=0.60.0
 # Replace deprecated pycrypto with pycryptodome
 pycryptodome>=3.19.0
