@@ -1,7 +1,9 @@
 # Core dependencies
 cryptography>=41.0.0
 scapy>=2.5.0
-pybluez>=0.30
+pybluez>=0.23
+# Use PyBluez fork that's maintained
+git+https://github.com/pybluez/pybluez.git#egg=pybluez
 paho-mqtt>=2.0.0
 requests>=2.31.0
 paramiko>=3.3.0
@@ -25,7 +27,8 @@ pyshark>=0.6.0
 # IoT specific
 bluepy>=1.3.0
 zigpy>=0.60.0
-pycrypto>=2.6.1
+# Replace deprecated pycrypto with pycryptodome
+pycryptodome>=3.19.0
 pyzbar>=0.1.9
 
 # System utilities
